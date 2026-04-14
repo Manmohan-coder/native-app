@@ -11,7 +11,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Link href={`/product/${product._id}`} asChild>
             <TouchableOpacity className='w-[48%] mb-4 bg-white rounded-lg overflow-hidden'>
                 <View className='relative w-full h-56 bg-gray-100'>
-                    <Image source={{ uri: product.images[0] }} className='w-full h-full rounded-xl object-cover' resizeMode='cover' />
+                    <Image source={{ uri: product.images?.[0] ?? '' }} className='w-full h-full rounded-xl object-cover' resizeMode='cover' />
 
                     {/* like icon */}
                     <TouchableOpacity className='absolute top-2 right-2 rounded-full z-10 p-2 bg-white shadow-sm' onPress={(e) => { e.stopPropagation(); /* handle like toggle */ }}>

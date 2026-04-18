@@ -1,3 +1,6 @@
+import { ComponentProps } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+
 export interface User {
     _id: string;
     name: string;
@@ -23,11 +26,11 @@ export interface Product {
     images: string[];
     sizes?: string[];
     category:
-        | {
-              _id: string;
-              name: string;
-          }
-        | string;
+    | {
+        _id: string;
+        name: string;
+    }
+    | string;
     stock: number;
     ratings: {
         average: number;
@@ -54,11 +57,16 @@ export type CartItemProps = {
     onUpdateQuantity?: (newQty: number) => void;
 };
 
-export type CategoryItemProps = {
-    item: { id: string | number; name: string; icon: string };
-    isSelected?: boolean;
-    onPress?: () => void;
-};
+type IconName = ComponentProps<typeof Ionicons>['name'];
+
+export interface CategoryItemProps {
+    item: {
+        name: string;
+        icon: IconName; 
+    };
+    isSelected: boolean;
+    onPress: () => void;
+}
 
 export type HeaderProps = {
     title?: string;

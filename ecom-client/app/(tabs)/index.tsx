@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Header from '@/components/Header'
-import { ActivityIndicator, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Dimensions, Image, ScrollView, Text, TouchableOpacity, View, Alert } from 'react-native'
 import { BANNERS, dummyProducts } from '@/assets/assets'
 import { useRouter } from 'expo-router'
 import { CATEGORIES } from '@/constants'
@@ -25,6 +25,18 @@ export default function Home() {
         fetchProducts();
     }, [])
 
+    // Handler functions
+    const handleGetNow = (banner: any) => {
+        Alert.alert("Get Now Clicked", `You selected: ${banner.title}`);
+        // You can also navigate:
+        // navigation.navigate('ProductDetails', { banner })
+    };
+
+    const handleSubscribeNow = () => {
+        Alert.alert("Subscribe", "Subscription flow will start here");
+        // navigation.navigate('SubscriptionScreen');
+    };
+
     return (
         <SafeAreaView className='flex-1' edges={['top']}>
             <Header title='Forever' showMenu showLogo showCart />
@@ -35,7 +47,8 @@ export default function Home() {
 
 
                     <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false} className='w-full h-48 rounded-xl ' scrollEventThrottle={16} onScroll={(e) => {
-                        const slide = Math.ceil(e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width)
+                        const raw = e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width;
+                        const slide = Math.max(0, Math.min(BANNERS.length - 1, Math.round(raw)));
                         if (slide !== activeBannerIndex) {
                             setActiveBannerIndex(slide)
                         }
@@ -43,21 +56,32 @@ export default function Home() {
                         {BANNERS.map((banner, index) => (
                             <View key={index} className='relative w-full h-48 bg-gray-200 overflow-hidden' style={{ width: width - 32 }}>
                                 <Image source={{ uri: banner.image }} className='w-full h-full rounded-xl' resizeMode='cover' />
+                                <View className='absolute inset-0 bg-black/40' />
                                 <View className='absolute bottom-4 left-4 z-10'>
                                     <Text className='text-white text-2xl font-bold'>{banner.title}</Text>
                                     <Text className='text-white text-sm font-medium'>{banner.subtitle}</Text>
-                                    <TouchableOpacity className='mt-2 px-4 py-2 bg-white rounded-full w-24 items-center justify-center self-start'>
-                                        <Text className='text-primary font-bold text-xs'>Get Now</Text>
+                                    <TouchableOpacity
+                                        onPress={() => handleGetNow(banner)}
+                                        className='mt-2 px-4 py-2 bg-white rounded-full w-24 items-center justify-center self-start'
+                                    >
+                                        <Text className='text-primary font-bold text-xs'>
+                                            Get Now
+                                        </Text>
                                     </TouchableOpacity>
+
+
                                 </View>
-                                <View className='absolute inset-0 bg-black/40' />
+
                             </View>
                         ))}
                     </ScrollView>
                     {/* pagination dots */}
                     <View className='flex-row items-center justify-center mt-2'>
                         {BANNERS.map((_, index) => (
-                            <View key={index} className={`w-2 h-2 rounded-full mx-1 ${index === activeBannerIndex ? 'w-6 bg-primary' : 'w-2 bg-gray-300'}`} style={{ backgroundColor: index === 0 ? '#000' : '#ccc' }} />
+                            <View
+                                key={index}
+                                className={`w-2 h-2 rounded-full mx-1 ${index === activeBannerIndex ? 'w-6 bg-primary' : 'w-2 bg-gray-300'}`} style={{ backgroundColor: index === 0 ? '#000' : '#ccc' }}
+                            />
                         ))}
                     </View>
                 </View>
@@ -96,13 +120,14 @@ export default function Home() {
                 </View>
 
                 {/* Newsletter CTA */}
-                
+
                 <View className='bg-primary rounded-xl p-6 items-center justify-center mb-8'>
                     <Text className='text-white text-2xl font-bold mb-2'>Join Our Revolution</Text>
                     <Text className='text-white text-center mb-4'>Subscribe to get the latest updates and offers.</Text>
-                    <TouchableOpacity className='px-6 py-3 bg-white rounded-full'>
+                    <TouchableOpacity onPress={handleSubscribeNow} className='px-6 py-3 bg-white rounded-full'>
                         <Text className='text-primary font-bold'>Subscribe Now</Text>
                     </TouchableOpacity>
+
                 </View>
 
 

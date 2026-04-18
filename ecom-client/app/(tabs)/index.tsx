@@ -46,7 +46,11 @@ export default function Home() {
                 <View className='mb-6'>
 
 
-                    <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false} className='w-full h-48 rounded-xl ' scrollEventThrottle={16} onScroll={(e) => {
+                    <ScrollView horizontal pagingEnabled 
+                    showsHorizontalScrollIndicator={false} 
+                    className='w-full h-48 rounded-xl ' 
+                    scrollEventThrottle={16} 
+                    onScroll={(e) => {
                         const raw = e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width;
                         const slide = Math.max(0, Math.min(BANNERS.length - 1, Math.round(raw)));
                         if (slide !== activeBannerIndex) {
@@ -80,7 +84,8 @@ export default function Home() {
                         {BANNERS.map((_, index) => (
                             <View
                                 key={index}
-                                className={`w-2 h-2 rounded-full mx-1 ${index === activeBannerIndex ? 'w-6 bg-primary' : 'w-2 bg-gray-300'}`} style={{ backgroundColor: index === 0 ? '#000' : '#ccc' }}
+                                className={`w-2 h-2 rounded-full mx-1 
+                                    ${index === activeBannerIndex ? 'w-6 bg-primary' : 'w-2 bg-gray-300'}`} 
                             />
                         ))}
                     </View>

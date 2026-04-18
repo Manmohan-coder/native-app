@@ -21,12 +21,14 @@ export default function ProductDetails() {
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-    const fetchProduct = async () => {
-        setProduct(dummyProducts.find(p => p._id === id) || null);
-        setLoading(false);
-    }
+
 
     useEffect(() => {
+        const fetchProduct = async () => {
+            const found = dummyProducts.find(p => p._id === id);
+            setProduct(found ?? null);
+            setLoading(false);
+        }
         fetchProduct();
     }, [id]);
 

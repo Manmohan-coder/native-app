@@ -26,7 +26,7 @@ export default function Home() {
     }, [])
 
     // Handler functions
-    const handleGetNow = (banner) => {
+    const handleGetNow = (banner: any) => {
         Alert.alert("Get Now Clicked", `You selected: ${banner.title}`);
         // You can also navigate:
         // navigation.navigate('ProductDetails', { banner })
@@ -47,9 +47,8 @@ export default function Home() {
 
 
                     <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false} className='w-full h-48 rounded-xl ' scrollEventThrottle={16} onScroll={(e) => {
-                        const slide = Math.round(
-                            e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width
-                        );
+                        const raw = e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width;
+                        const slide = Math.max(0, Math.min(BANNERS.length - 1, Math.round(raw)));
                         if (slide !== activeBannerIndex) {
                             setActiveBannerIndex(slide)
                         }
@@ -62,7 +61,7 @@ export default function Home() {
                                     <Text className='text-white text-2xl font-bold'>{banner.title}</Text>
                                     <Text className='text-white text-sm font-medium'>{banner.subtitle}</Text>
                                     <TouchableOpacity
-                                        onPress={() => handleGetNow(banner as any)}
+                                        onPress={() => handleGetNow(banner)}
                                         className='mt-2 px-4 py-2 bg-white rounded-full w-24 items-center justify-center self-start'
                                     >
                                         <Text className='text-primary font-bold text-xs'>
@@ -128,7 +127,7 @@ export default function Home() {
                     <TouchableOpacity onPress={handleSubscribeNow} className='px-6 py-3 bg-white rounded-full'>
                         <Text className='text-primary font-bold'>Subscribe Now</Text>
                     </TouchableOpacity>
-                    
+
                 </View>
 
 

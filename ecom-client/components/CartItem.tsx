@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '@/constants';
 
 export default function CartItem({ item, onRemove, onUpdateQuantity }: CartItemProps) {
-    const imageUrl = item.product.images[0]
+    const imageUrl = item.product.images?.[0] ?? ''
 
     return (
         <View className='flex-row mb-4 bg-white p-3 rounded-xl'>
@@ -33,8 +33,12 @@ export default function CartItem({ item, onRemove, onUpdateQuantity }: CartItemP
                         </TouchableOpacity>
 
                         <Text className='mx-2 text-sm'>{item.quantity}</Text>
-                        
-                        <TouchableOpacity onPress={() => onUpdateQuantity && onUpdateQuantity(item.quantity + 1)} className='px-3 py-1'>
+
+                        <TouchableOpacity
+                            onPress={() => onUpdateQuantity && item.quantity > 1 && onUpdateQuantity(item.quantity - 1)}
+                            className='px-3 py-1'
+                            disabled={item.quantity <= 1}
+                        >
                             <Ionicons name='add' size={16} color={COLORS.primary} />
                         </TouchableOpacity>
                     </View>
@@ -42,4 +46,4 @@ export default function CartItem({ item, onRemove, onUpdateQuantity }: CartItemP
             </View>
         </View>
     )
-}
+} 

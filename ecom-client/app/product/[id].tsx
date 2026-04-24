@@ -12,7 +12,7 @@ import Toast from 'react-native-toast-message';
 const { width } = Dimensions.get('window');
 
 export default function ProductDetails() {
-    const { id } = useLocalSearchParams();
+    const { id } = useLocalSearchParams<{ id?: string | string[] }>();
     const router = useRouter();
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
@@ -25,7 +25,8 @@ export default function ProductDetails() {
 
     useEffect(() => {
         const fetchProduct = async () => {
-            const found = dummyProducts.find(p => p._id === id);
+            const productId = Array.isArray(id) ? id[0] : id;
+            const found = dummyProducts.find(p => p._id === productId);
             setProduct(found ?? null);
             setLoading(false);
         }
@@ -39,6 +40,7 @@ export default function ProductDetails() {
             </SafeAreaView>
         )
     }
+
     if (!product) {
         return (
             <SafeAreaView className='flex-1 justify-center items-center'>
@@ -49,14 +51,21 @@ export default function ProductDetails() {
 
     const isLiked = isInWishlist(product._id);
 
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         if (!selectedSize) {
             Toast.show({
                 type: 'info',
                 text1: 'Please select a size',
             });
             return
-        } addToCart(product, selectedSize || "")
+        } try {
+            await addToCart(product, selectedSize);
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: 'Failed to add to cart',
+            });
+        }
     }
 
     return (
@@ -68,7 +77,7 @@ export default function ProductDetails() {
                         horizontal pagingEnabled
                         showsHorizontalScrollIndicator={false} scrollEventThrottle={16}
                         onScroll={(e) => {
-                            const index = Math.ceil(e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width);
+                            const index = Math.round(e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width);
                             setActiveImageIndex(index);
                         }}
                     >
@@ -81,7 +90,7 @@ export default function ProductDetails() {
                     {/* header actions */}
                     <View className='absolute top-12 left-4 right-4 flex-row justify-between items-center z-10'>
                         <TouchableOpacity onPress={() => router.back()} className='w-10 h-10 bg-white/80 rounded-full items-center justify-center'>
-                            <Ionicons name='arrow-back' size={24} color={COLORS.primary} onPress={() => router.back()} />
+                            <Ionicons name='arrow-back' size={24} color={COLORS.primary} />
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => toggleWishlist(product)} className='w-10 h-10 bg-white/80 rounded-full items-center justify-center'>
@@ -107,14 +116,15 @@ export default function ProductDetails() {
                         </View>
                     </View>
                     {/* price */}
-                    <Text className='text-xl font-bold text-primary mb-4'>${product.price.toFixed(2)}</Text>
+                    <Text className='text-xl font-bold text-primary mb-4'>
+                        ${product.price?.toFixed(2)}</Text>
                     {/* size */}
                     {product.sizes && product.sizes.length > 0 && (
                         <><Text className='text-gray-700 font-semibold text-base mb-2'>Select Size</Text>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false} className='mb-6'>
                                 {product.sizes.map((size) => (
                                     <TouchableOpacity key={size} onPress={() => setSelectedSize(size)}
-                                        className={`px-4 py-2 mr-3 rounded-full items-center justify-center ${selectedSize === size ? 'border-primary bg-primary' : 'border-gray-100 bg-white'}`}>
+                                        className={`px-4 py-2 mr-3 rounded-full items-center justify-center ${selectedSize === size ? 'border-primary bg-primary' : 'border border-gray-100 bg-white'}`}>
 
                                         <Text className={`text-sm font-medium ${selectedSize === size ? 'text-white' : 'text-gray-800'}`}>{size}</Text>
                                     </TouchableOpacity>

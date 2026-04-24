@@ -23,7 +23,7 @@ export default function Cart() {
                     <ScrollView className='flex-1 px-4 mt-4' showsVerticalScrollIndicator={false}>
                         {cartItems.map((item, index) => (
                             <CartItem key={index} item={item}
-                                onRemove={() => removeFromCart(item.product._id, item.size)}
+                                onRemove={() => removeFromCart(item.id, item.size)}
                                 onUpdateQuantity={(q) => updateQuantity(item.id, q, item.size)}
                             />
 
@@ -45,7 +45,7 @@ export default function Cart() {
                         <View className='border-t border-gray-300 my-2' />
                         {/* total  */}
                         <View className='flex-row justify-between mb-2'>
-                            <Text className='text-xl font-semibold mt-4'>Shipping</Text>
+                            <Text className='text-xl font-semibold mt-4'>Total</Text>
                             <Text className='text-xl font-semibold mt-4'>${total.toFixed(2)}</Text>
                         </View>
                         {/* check=out */}

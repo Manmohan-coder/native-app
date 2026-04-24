@@ -55,7 +55,7 @@ export default function Shop() {
                 {/* search bar */}
                 <View className='flex-1 flex-row items-center bg-white rounded-xl border border-gray-100 '>
                     <Ionicons name='search' size={20} color={COLORS.secondary} />
-                    <TextInput className='flex-1 ml-2 text-primary px-4 py-3' placeholder='Search products...' placeholderTextColor={COLORS.secondary} returnKeyType='Search' />
+                    <TextInput className='flex-1 ml-2 text-primary px-4 py-3' placeholder='Search products...' placeholderTextColor={COLORS.secondary} returnKeyType='search' />
                 </View>
                 {/* filter button */}
                 <TouchableOpacity className='bg-gray-800 w-12 h-12 items-center justify-center rounded-xl'>

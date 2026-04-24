@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import React from 'react'
 import { Tabs } from 'expo-router'
 import { Feather, Ionicons } from '@expo/vector-icons'

@@ -16,7 +16,7 @@ export default function ProductDetails() {
     const router = useRouter();
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
-    const { addToCart, cartItems, itemCount } = useCart();
+    const { addToCart, itemCount } = useCart();
     const { toggleWishlist, isInWishlist } = useWishlist();
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -60,10 +60,11 @@ export default function ProductDetails() {
             return
         } try {
             await addToCart(product, selectedSize);
-        } catch (error) {
+        } catch (e) {
             Toast.show({
                 type: 'error',
                 text1: 'Failed to add to cart',
+                text2: (e as Error).message,
             });
         }
     }

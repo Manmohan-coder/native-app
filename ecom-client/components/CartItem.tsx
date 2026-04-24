@@ -35,7 +35,7 @@ export default function CartItem({ item, onRemove, onUpdateQuantity }: CartItemP
                         <Text className='mx-2 text-sm'>{item.quantity}</Text>
 
                         <TouchableOpacity
-                            onPress={() => onUpdateQuantity && item.quantity > 1 && onUpdateQuantity(item.quantity - 1)}
+                            onPress={() => onUpdateQuantity && onUpdateQuantity(item.quantity + 1)}
                             className='px-3 py-1'
                             disabled={item.quantity <= 1}
                         >

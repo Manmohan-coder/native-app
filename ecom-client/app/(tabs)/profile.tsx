@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Header from '@/components/Header'
 import { dummyUser } from '@/assets/assets'
@@ -9,12 +9,12 @@ import { COLORS, PROFILE_MENU } from '@/constants'
 
 
 export default function Profile() {
-    const { user } = { user: dummyUser }
+    const [user, setUser] = useState<typeof dummyUser | null>(dummyUser)
     const router = useRouter()
 
     const handleLogout = async() => {
         // Implement your logout logic here (e.g., clear user session, tokens, etc.)
-        console.log('User logged out');
+        setUser(null); // Clear user data on logout 
         // After logout, navigate to the sign-in page
         router.replace('/sign-in');
     }

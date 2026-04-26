@@ -1,20 +1,19 @@
 import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Header from '@/components/Header'
-import { dummyUser } from '@/assets/assets'
 import { useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS, PROFILE_MENU } from '@/constants'
+import { useClerk } from '@clerk/clerk-expo'
 
 
 export default function Profile() {
-    const [user, setUser] = useState<typeof dummyUser | null>(dummyUser)
+    const { user, signOut } = useClerk()
     const router = useRouter()
 
-    const handleLogout = async() => {
-        // Implement your logout logic here (e.g., clear user session, tokens, etc.)
-        setUser(null); // Clear user data on logout 
+    const handleLogout = async () => {
+        await signOut(); // Clear user data on logout 
         // After logout, navigate to the sign-in page
         router.replace('/sign-in');
     }
@@ -22,9 +21,9 @@ export default function Profile() {
     return (
         <SafeAreaView className='flex-1 bg-surface' edges={['top']}>
             <Header title='My Profile' showBack />
-            <ScrollView className='flex-1 px-4' contentContainerStyle={!user ? { flex: 1, justifyContent: 'center', alignItems: 'center' } : { paddingTop: 16 }} >
+            <ScrollView className='flex-1 px-4'
+                contentContainerStyle={!user ? { flex: 1, justifyContent: 'center', alignItems: 'center' } : { paddingTop: 16 }} >
                 {!user ? (
-
                     // guest view when user data is not available
                     <View className='items-center w-full'>
                         <View className='w-24 h-24 rounded-full bg-gray-200 items-center justify-center mb-6'>
@@ -46,8 +45,8 @@ export default function Profile() {
                                 </View>
 
                             </View>
-                            <Text className='text-primary text-lg font-medium'>{user.name}</Text>
-                            <Text className='text-primary text-sm'>{user.email}</Text>
+                            <Text className='text-primary text-lg font-medium'>{user.firstName + ' ' + user.lastName}</Text>
+                            <Text className='text-primary text-sm'>{user.emailAddresses[0].emailAddress}</Text>
 
                             {/* admin panel button if admin */}
                             {user.publicMetadata?.role === 'admin' && (
@@ -63,14 +62,14 @@ export default function Profile() {
                                 <TouchableOpacity
                                     key={item.id}
                                     className={`flex-row items-center px-4 py-3 ${index !== PROFILE_MENU.length - 1 ? 'border-b border-gray-100' : ''}`}
-                                    onPress={() => router.push(item.route)} activeOpacity={0.7}>
+                                    onPress={() => router.push('/')} activeOpacity={0.7}>
 
                                     <View className='w-10 h-10 rounded-full bg-surface items-center justify-center mr-4'>
                                         <Ionicons name={item.icon as any} size={20} color={COLORS.primary} />
                                     </View>
 
                                     <Text className='flex-1 text-primary text-base'>{item.title}</Text>
-                                    
+
                                     <Ionicons name='chevron-forward' size={20} color={COLORS.primary} />
                                 </TouchableOpacity>
                             ))}

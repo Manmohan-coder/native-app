@@ -11,17 +11,26 @@ export const clerkWebhookHandler = async (req: Request, res: Response) => {
             const user = await User.findOne({ clerkId: evt.data.id })
             const userData = {
                 clerkId: evt.data.id,
-                email: evt.data?.email_addresses[0]?.email_address,
+                email: evt.data?.email_addresses?.[0]?.email_address,
                 name: evt.data?.first_name + " " + evt.data?.last_name,
                 image: evt.data?.image_url,
             }
             if (user) {
-                await User.findOneAndUpdate({ clerkId: evt.data.id }, userData)
-            }else{
+                await User.findOneAndUpdate({ clerkId: evt.data.id }, userData, { new: true })
+            } else {
                 await User.create(userData)
             }
         }
-        return res.json({success:true,message:"Webhook received"})
+        // ✅ DELETE USER (NEW)
+        if (evt.type === "user.deleted") {
+            await User.findOneAndDelete({ clerkId: evt.data.id });
+        }
+        return res.status(200).json(
+            { 
+                success: true, 
+                message: "Webhook received" 
+            }
+        )
 
     } catch (err) {
         console.error('Error verifying webhook:', err)

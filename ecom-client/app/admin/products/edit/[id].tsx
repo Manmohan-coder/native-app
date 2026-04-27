@@ -32,12 +32,21 @@ export default function EditProduct() {
         const fetchProduct = async () => {
             try {
                 const product: any = dummyProducts.find((p) => p._id === id);
-                setName(product.name);
+                if (!product) {
+                    Toast.show({ type: 'error', text1: 'Product not found' });
+                    router.back();
+                    return;
+                }
+                setName(product.name ?? "");
                 setDescription(product.description || "");
-                setPrice(product.price.toString());
-                setStock(product.stock.toString());
-                setCategory(typeof product.category === 'object' ? product.category.name : product.category);
-                setIsFeatured(product.isFeatured);
+                setPrice(product.price?.toString() ?? "");
+                setStock(product.stock?.toString() ?? "");
+                setCategory(
+                    product.category && typeof product.category === 'object'
+                        ? product.category.name
+                        : (product.category ?? "")
+                );
+                setIsFeatured(Boolean(product.isFeatured));
 
                 if (product.sizes) setSizes(Array.isArray(product.sizes) ? product.sizes.join(", ") : product.sizes);
 

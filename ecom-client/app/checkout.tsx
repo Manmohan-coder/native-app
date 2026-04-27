@@ -82,9 +82,9 @@ export default function Checkout() {
                                 </TouchableOpacity>
                             </View>
                             <Text className='text-sm text-gray-600 leading-5'>{selectedAddress.street}, {selectedAddress.city}
-                                <br />
+                                {'\n'}
                                 {selectedAddress.state} - {selectedAddress.zipCode}
-                                <br />
+                                {'\n'}
                                 {selectedAddress.country}
                             </Text>
                         </View>

@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import { clerkMiddleware } from "@clerk/express";
+import { clerkWebhookHandler } from "./controllers/webhooks.js";
 
 const app = express();
 
@@ -8,6 +9,8 @@ app.use(clerkMiddleware())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors())
+
+app.post('/api/clerk',express.raw({type:"appliction/json"}), clerkWebhookHandler)
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Hello, World!");

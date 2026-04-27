@@ -10,8 +10,11 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
                 message: "Not Authorized"
             })
         }
-        let user = await User.findOne({ clerkId: userId })
-        req.user = user;
+        const user = await User.findOne({ clerkId: userId })
+        if (!user) {
+            return res.status(401).json({ success: false, message: "User not found" })
+        }
+        req.user = user
         next()
     } catch (err) {
         console.error('Auth error :', err)
@@ -21,9 +24,9 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
 
 export const authorize = (...roles: string[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
-        if (!roles.includes(req.user.role)) {
+        if (!req.user || !roles.includes(req.user.role)) {
             return res.status(403).json({
-                success: false, 
+                success: false,
                 message: 'Unauthorized To Access'
             })
         }

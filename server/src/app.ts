@@ -10,9 +10,9 @@ app.use(clerkMiddleware())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors())
-app.post('/api/clerk',express.raw({type:"appliction/json"}), clerkWebhookHandler)
+app.post('/api/clerk', express.raw({ type: "appliction/json" }), clerkWebhookHandler)
 
-app.use('api/products',ProductRouter)
+app.use('api/products', ProductRouter)
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Hello, World!");

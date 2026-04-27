@@ -72,7 +72,7 @@ export const createProduct = async (req: Request, res: Response) => {
             sizes: sizes
         }
         if (images.length === 0) {
-            return res.status(400).json({ success: false, message: "upload atleast one image" })
+            return res.status(400).json({ success: false, message: "upload at least one image" })
         }
         const product = await Product.create(productData)
         res.status(201).json({ success: true, data: product })
@@ -86,11 +86,9 @@ export const updateProduct = async (req: Request, res: Response) => {
     try {
         let images: string[] = []
         if (req.body.existingImages) {
-            if (Array.isArray(req.body.existingImages)) {
-                images = [...req.body.existingImages]
-            } else {
-                images = [...req.body.existingImages]
-            }
+            images = Array.isArray(req.body.existingImages)
+                ? [...req.body.existingImages]
+                : [req.body.existingImages]
         }
         // handle file upload
         if (req.files && (req.files as any).length > 0) {
@@ -144,16 +142,16 @@ export const updateProduct = async (req: Request, res: Response) => {
 // delete product
 export const deleteProduct = async (req: Request, res: Response) => {
     try {
-        const product = await Product.findById(req.params.id) 
-        if(!product){
-            res.status(404).json({ success: false, message: "Product not found"})
+        const product = await Product.findById(req.params.id)
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found" })
         }
         // delete images from cloudinary
-        if(product?.images && product.images?.length>0){
-            const deletePromise = product?.images.map((imagesUrl)=>{
-                const publicIdMatch = imagesUrl.match(/\/v\d+\/(.+)\.[a-z]+$/)
-                const publicId = publicIdMatch?publicIdMatch[1]:null;
-                if(publicId){
+        if (product?.images && product.images?.length > 0) {
+            const deletePromise = product.images.map((imagesUrl) => {
+                const publicIdMatch = imagesUrl.match(/\/v\d+\/(.+)\.[a-z0-9]+$/)
+                const publicId = publicIdMatch ? publicIdMatch[1] : null;
+                if (publicId) {
                     return cloudinary.uploader.destroy(publicId)
                 }
                 return Promise.resolve()
@@ -162,7 +160,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
         }
         await Product.findByIdAndDelete(req.params.id)
 
-        res.json({success:true,message:"Product Deleted!"})
+        res.json({ success: true, message: "Product Deleted!" })
     } catch (err: any) {
         res.status(500).json({ success: false, message: err.message })
     }

@@ -147,7 +147,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
             return res.status(404).json({ success: false, message: "Product not found" })
         }
         // delete images from cloudinary
-        if (product?.images && product.images?.length > 0) {
+        if (product?.images && product.images.length > 0) {
             const deletePromise = product.images.map((imagesUrl) => {
                 const publicIdMatch = imagesUrl.match(/\/v\d+\/(.+)\.[a-z0-9]+$/)
                 const publicId = publicIdMatch ? publicIdMatch[1] : null;
